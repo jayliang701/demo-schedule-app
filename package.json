@@ -1,0 +1,19 @@
+{
+  "name": "ScheduleApp",
+  "version": "1.0.0",
+  "description": "An example project for learning Schedule of weroll",
+  "main": "main.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "cpu-stat": "^2.0.1",
+    "weroll": "^1.0.31"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jay Liang",
+  "license": "MIT"
+}

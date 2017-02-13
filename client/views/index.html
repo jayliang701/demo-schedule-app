@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monit</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <!-- import js -->
+    <script type="text/javascript" src="{{setting.RES_CDN_DOMAIN}}/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="{{setting.RES_CDN_DOMAIN}}/js/Chart.min.js"></script>
+</head>
+<body>
+
+<div style="width:800px; height:300px;">
+    <canvas id="cpuChart" width="800" height="300"></canvas>
+</div>
+
+<div style="width:800px; height:300px;">
+    <canvas id="memChart" width="800" height="300"></canvas>
+</div>
+
+<script>
+
+    var options = {
+        scales: {
+            yAxes: [{
+                display: true,
+                ticks: {
+                    beginAtZero: true,
+                    steps:20,
+                    stepValue:5,
+                    max:100
+                }
+            }]
+        }
+    };
+
+    var cpuChartData = {
+        labels: [],
+        datasets: [
+            {
+                label: "CPU",
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                borderColor: "rgba(75,192,192,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(75,192,192,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: []
+            }
+        ]
+    };
+
+    var cpuChart = new Chart(document.getElementById("cpuChart"), {
+        type: 'line',
+        data: cpuChartData,
+        options: options
+    });
+
+    var memChartData = {
+        labels: [],
+        datasets: [
+            {
+                label: "Memory",
+                fill: true,
+                lineTension: 0.1,
+                backgroundColor: "rgba(51, 102, 255,0.4)",
+                borderColor: "rgba(51, 102, 255,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(51, 102, 255,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(51, 102, 255,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: []
+            }
+        ]
+    };
+
+    var memChart = new Chart(document.getElementById("memChart"), {
+        type: 'line',
+        data: memChartData,
+        options: options
+    });
+
+    function formatTime(time) {
+        var date = new Date();
+        date.setTime(time);
+        return (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds());
+    }
+
+    function callAPI(method, data, callBack) {
+        var params = {};
+        params.method = method;
+        params.data = data;
+
+        $.ajax({
+            type: "post",
+            url: "http://localhost:3000/api",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+            },
+            data: JSON.stringify(params),
+            success: function (result, status, xhr) {
+                if (result.code == 1) {
+                    callBack && callBack(result.data);
+                } else {
+                    alert('call api error: [' + result.code + '] ' + result.msg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('call api error: ' + textStatus);
+            }
+        });
+    }
+
+    function updateChart(chart, chartData, newData) {
+        chartData.datasets[0].data.length = 0;
+        chartData.labels.length = 0;
+        newData.forEach(function (obj) {
+            chartData.labels.push(formatTime(obj[0]));
+            chartData.datasets[0].data.push(parseInt(obj[1]));
+        });
+        chart.update();
+    }
+
+    function update() {
+        callAPI("system.performance", {}, function(data) {
+            updateChart(cpuChart, cpuChartData, data.cpu);
+            updateChart(memChart, memChartData, data.mem);
+            setTimeout(update, 10000);
+        });
+    }
+
+    update();
+
+</script>
+</body>
+</html>

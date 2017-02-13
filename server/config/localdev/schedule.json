@@ -1,0 +1,7 @@
+{
+    "ver": "1.0.0",
+    "list":[
+        { "type":1, "duration":10, "script":"monit", "initExecute":true, "option":{ "duration":10, "checkTime":5, "max":8640 } },
+        { "type":2, "time":"00:46:50", "script":"report", "option":{ "sendTo":"admin@xxx.com", "senderName":"Robot" } }
+    ]
+}
