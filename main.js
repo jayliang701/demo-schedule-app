@@ -23,8 +23,7 @@ app.addTask(function(cb) {
             ssl:true
         },
         sender:"developer@magicfish.cn",
-        senderName:"Robot",
-        simulate:true
+        senderName:"Robot"
     };
     require("weroll/utils/MailUtil").init(config);
 

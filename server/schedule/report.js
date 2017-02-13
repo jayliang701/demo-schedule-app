@@ -1,3 +1,5 @@
+//使用weroll内置的邮件工具类发送邮件
+//你也可以用其他邮件库实现发送
 var MailUtil = require('weroll/utils/MailUtil');
 
 exports.exec = function(callBack, option) {
@@ -14,7 +16,6 @@ exports.exec = function(callBack, option) {
     yesterdayEnd.setMilliseconds(0);
     //yesterdayEnd 即是新的一天的开始, 昨日的结束
     yesterdayEnd = yesterdayEnd.getTime() - 1;
-    yesterdayEnd += 24 * 60 * 60 * 1000;
 
     var cpu = Performance.cpu || [];
     result.cpu.max = cpu[0][1];

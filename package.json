@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "cpu-stat": "^2.0.1",
-    "weroll": "^1.0.31"
+    "weroll": "^1.0.33"
   },
   "devDependencies": {},
   "scripts": {
